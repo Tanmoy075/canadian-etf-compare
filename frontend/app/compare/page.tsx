@@ -15,7 +15,7 @@ import {
 import { ETFDetail, fetchCompare } from "../../lib/api";
 import { CompareItem, loadCompare, saveCompare } from "../../lib/compareStore";
 
-const PERFORMANCE_PERIODS = ["5Y", "10Y", "Since Inception"];
+const PERFORMANCE_PERIODS = ["5Y", "Since Inception"];
 const CHART_COLORS = ["#63B3ED", "#34D399", "#F87171", "#FBBF24", "#A78BFA"];
 
 function getBasketFromUrl(searchParams: URLSearchParams): CompareItem[] {
@@ -144,11 +144,11 @@ function ComparePageContent() {
                   <CartesianGrid strokeDasharray="3 3" stroke="#0a1628" />
                   <XAxis
                     dataKey="period"
-                    tick={{ fill: "#6B7A99", fontSize: 11 }}
+                    tick={{ fill: "#A8B8D0", fontSize: 13 }}
                   />
                   <YAxis
                     tickFormatter={(v) => `${v}%`}
-                    tick={{ fill: "#6B7A99", fontSize: 11 }}
+                    tick={{ fill: "#A8B8D0", fontSize: 13 }}
                   />
                   <Tooltip
                     contentStyle={{
@@ -158,7 +158,7 @@ function ComparePageContent() {
                     }}
                     formatter={(value: number) => `${value.toFixed(2)}%`}
                   />
-                  <Legend />
+                  <Legend wrapperStyle={{ fontSize: 13 }} formatter={(value) => <span style={{ color: "#E8EDF5" }}>{value}</span>} />
                   {data.map((etf, i) => (
                       <Bar
                         key={etf.ticker}
@@ -175,7 +175,7 @@ function ComparePageContent() {
 
           <div className="card overflow-x-auto p-4 text-xs">
             <table className="min-w-full text-left">
-            <thead className="border-b border-accent-light/15 text-[11px] uppercase text-content-secondary">
+            <thead className="border-b border-accent-light/15 text-[11px] uppercase text-[#A8B8D0]">
               <tr>
                 <th className="py-2 pr-4">Metric</th>
                 {data.map((etf) => (
@@ -187,7 +187,7 @@ function ComparePageContent() {
                       >
                         {etf.ticker}
                       </a>
-                        <span className="font-display text-[11px] text-content-secondary">
+                        <span className="font-display text-[11px] text-[#A8B8D0]">
                         {etf.name}
                       </span>
                     </div>
@@ -242,14 +242,6 @@ function ComparePageContent() {
                   "—"
               )}
               {renderRow(
-                "10Y return (%)",
-                data,
-                (e) =>
-                  findPerformance(e, "10Y") ??
-                  findPerformance(e, "10y") ??
-                  "—"
-              )}
-              {renderRow(
                 "Since inception (%)",
                 data,
                 (e) =>
@@ -287,9 +279,9 @@ function renderRow(
 ) {
   return (
     <tr className="border-b border-accent-light/15 last:border-0">
-      <td className="py-2 pr-4 text-content-secondary">{label}</td>
+      <td className="py-2 pr-4 text-[#A8B8D0]">{label}</td>
       {etfs.map((etf) => (
-        <td key={etf.ticker + label} className="py-2 px-4 text-content-primary">
+        <td key={etf.ticker + label} className="py-2 px-4 text-[#E8EDF5]">
           {selector(etf)}
         </td>
       ))}

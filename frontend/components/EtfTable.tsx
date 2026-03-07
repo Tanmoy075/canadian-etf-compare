@@ -41,7 +41,7 @@ export function EtfTable({
 
   return (
     <div className="card p-4">
-        <div className="mb-3 flex items-center justify-between text-xs text-content-secondary">
+        <div className="mb-3 flex items-center justify-between text-xs text-[#A8B8D0]">
         <span>{total} ETFs found</span>
         <span>
           Compare basket: {basket.length} selected (up to 5).{" "}
@@ -59,7 +59,7 @@ export function EtfTable({
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full text-left text-sm">
-          <thead className="border-b border-accent-light/15 text-xs uppercase text-content-secondary">
+          <thead className="border-b border-accent-light/15 text-xs uppercase text-[#A8B8D0]">
             <tr>
               <th className="py-2 pr-4">ETF</th>
               <th className="py-2 px-4">Provider</th>
@@ -84,24 +84,24 @@ export function EtfTable({
                     >
                       {etf.ticker}
                     </a>
-                    <span className="font-display text-xs text-content-secondary">
+                    <span className="font-display text-xs text-[#A8B8D0]">
                       {etf.name}
                     </span>
                   </div>
                 </td>
-                <td className="py-2 px-4 text-xs text-content-secondary">
+                <td className="py-2 px-4 text-xs text-[#E8EDF5]">
                   {etf.provider}
                 </td>
-                <td className="py-2 px-4 text-xs text-content-secondary">
+                <td className="py-2 px-4 text-xs text-[#E8EDF5]">
                   {etf.asset_class}
                 </td>
-                <td className="py-2 px-4 text-xs text-content-primary">
+                <td className="py-2 px-4 text-xs text-[#E8EDF5]">
                   {etf.mer.toFixed(2)}
                 </td>
-                <td className="py-2 px-4 text-xs text-content-primary">
+                <td className="py-2 px-4 text-xs text-[#E8EDF5]">
                   {etf.distribution_yield.toFixed(2)}
                 </td>
-                <td className="py-2 px-4 text-xs text-content-primary">
+                <td className="py-2 px-4 text-xs text-[#E8EDF5]">
                   {etf.risk_rating}
                 </td>
                 <td className="py-2 pl-4 text-right">

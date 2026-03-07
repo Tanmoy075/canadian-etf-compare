@@ -42,19 +42,19 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
               <span className="inline-flex items-center rounded-full bg-accent/20 px-3 py-1 text-xs font-medium text-accent-light">
                 {etf.ticker}
               </span>
-              <span className="text-xs uppercase tracking-wide text-slate-400">
+              <span className="text-xs uppercase tracking-wide text-[#A8B8D0]">
                 {etf.provider}
               </span>
             </div>
             <h2 className="font-display mt-2 text-lg font-semibold text-content-primary">
               {etf.name}
             </h2>
-            <p className="mt-1 text-xs text-content-secondary">
+            <p className="mt-1 text-xs text-[#A8B8D0]">
               {etf.asset_class} &middot; {etf.currency} &middot; Risk:{" "}
               {etf.risk_rating}
             </p>
             {etf.tracking_index && (
-              <p className="mt-2 text-xs text-content-secondary">
+              <p className="mt-2 text-xs text-[#A8B8D0]">
                 Tracking index:{" "}
                 <span className="text-content-primary">
                   {etf.tracking_index}
@@ -187,7 +187,7 @@ function BreakdownCard({
             className="flex items-center justify-between"
           >
             <span>{item.label}</span>
-            <span className="text-content-secondary">
+            <span className="font-bold text-content-primary">
               {item.weight_pct.toFixed(1)} %
             </span>
           </li>

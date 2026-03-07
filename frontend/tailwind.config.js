@@ -17,6 +17,7 @@ module.exports = {
         content: {
           primary: "#E8EDF5",
           secondary: "#6B7A99",
+          label: "#A8B8D0",
         },
         positive: "#34D399",
         negative: "#F87171",
