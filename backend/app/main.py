@@ -1,8 +1,8 @@
-from fastapi import FastAPI, Query, HTTPException, UploadFile, File
+from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 
-from .models import ETF, ETFDetail, ETFListResponse, ETFCompareResponse
+from .models import ETFDetail, ETFListResponse, ETFCompareResponse
 from .repository import ETFRepository
 
 
@@ -64,22 +64,6 @@ def get_etf(ticker: str) -> ETFDetail:
     if not etf:
         raise HTTPException(status_code=404, detail="ETF not found")
     return etf
-
-
-@app.post("/admin/upload-csv")
-async def upload_csv(file: UploadFile = File(...)) -> dict:
-    """
-    Upload a CSV to replace the in-memory dataset.
-    Starter hook for your 'manual CSV upload' data source.
-    """
-    if not file.filename.lower().endswith(".csv"):
-        raise HTTPException(status_code=400, detail="Please upload a .csv file")
-    content = await file.read()
-    try:
-        repo.load_csv_bytes(content)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    return {"status": "ok", "message": "CSV loaded into memory"}
 
 
 if __name__ == "__main__":
