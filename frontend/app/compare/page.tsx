@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -24,7 +24,7 @@ function getBasketFromUrl(searchParams: URLSearchParams): CompareItem[] {
   return list.slice(0, 5).map((ticker) => ({ ticker, name: ticker }));
 }
 
-export default function ComparePage() {
+function ComparePageContent() {
   const searchParams = useSearchParams();
   const [basket, setBasket] = useState<CompareItem[]>([]);
   const [data, setData] = useState<ETFDetail[]>([]);
@@ -265,6 +265,20 @@ export default function ComparePage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function ComparePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="card p-4 text-sm text-slate-400">
+          Loading compare...
+        </div>
+      }
+    >
+      <ComparePageContent />
+    </Suspense>
   );
 }
 
