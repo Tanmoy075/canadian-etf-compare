@@ -41,7 +41,7 @@ export function EtfTable({
 
   return (
     <div className="card p-4">
-      <div className="mb-3 flex items-center justify-between text-xs text-slate-400">
+        <div className="mb-3 flex items-center justify-between text-xs text-content-secondary">
         <span>{total} ETFs found</span>
         <span>
           Compare basket: {basket.length} selected (up to 5).{" "}
@@ -51,7 +51,7 @@ export function EtfTable({
                 ? `/compare?tickers=${basket.map((b) => b.ticker).join(",")}`
                 : "/compare"
             }
-            className="text-brand-400 underline"
+            className="text-accent-light underline"
           >
             View comparison
           </a>
@@ -59,7 +59,7 @@ export function EtfTable({
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full text-left text-sm">
-          <thead className="border-b border-slate-800 text-xs uppercase text-slate-400">
+          <thead className="border-b border-accent-light/15 text-xs uppercase text-content-secondary">
             <tr>
               <th className="py-2 pr-4">ETF</th>
               <th className="py-2 px-4">Provider</th>
@@ -74,34 +74,34 @@ export function EtfTable({
             {etfs.map((etf) => (
               <tr
                 key={etf.ticker}
-                className="border-b border-slate-900/60 last:border-0 hover:bg-slate-900/40"
+                className="border-b border-accent-light/15 last:border-0 hover:bg-secondary/40"
               >
                 <td className="py-2 pr-4 align-middle">
                   <div className="flex flex-col">
                     <a
                       href={`/etf/${etf.ticker}`}
-                      className="text-sm font-medium text-slate-50 hover:text-brand-400"
+                      className="font-display text-sm font-medium text-content-primary hover:text-accent-light"
                     >
                       {etf.ticker}
                     </a>
-                    <span className="text-xs text-slate-400">
+                    <span className="font-display text-xs text-content-secondary">
                       {etf.name}
                     </span>
                   </div>
                 </td>
-                <td className="py-2 px-4 text-xs text-slate-300">
+                <td className="py-2 px-4 text-xs text-content-secondary">
                   {etf.provider}
                 </td>
-                <td className="py-2 px-4 text-xs text-slate-300">
+                <td className="py-2 px-4 text-xs text-content-secondary">
                   {etf.asset_class}
                 </td>
-                <td className="py-2 px-4 text-xs text-slate-100">
+                <td className="py-2 px-4 text-xs text-content-primary">
                   {etf.mer.toFixed(2)}
                 </td>
-                <td className="py-2 px-4 text-xs text-slate-100">
+                <td className="py-2 px-4 text-xs text-content-primary">
                   {etf.distribution_yield.toFixed(2)}
                 </td>
-                <td className="py-2 px-4 text-xs text-slate-100">
+                <td className="py-2 px-4 text-xs text-content-primary">
                   {etf.risk_rating}
                 </td>
                 <td className="py-2 pl-4 text-right">
@@ -110,8 +110,8 @@ export function EtfTable({
                     className={
                       "rounded-full border px-3 py-1 text-xs transition " +
                       (isInBasket(etf.ticker)
-                        ? "border-brand-400 bg-brand-500/20 text-brand-100"
-                        : "border-slate-700 text-slate-200 hover:border-slate-500")
+                        ? "border-accent-light bg-accent/20 text-accent-light"
+                        : "border-accent/15 text-content-primary hover:border-accent-light")
                     }
                   >
                     {isInBasket(etf.ticker) ? "In basket" : "Add to compare"}
@@ -123,7 +123,7 @@ export function EtfTable({
               <tr>
                 <td
                   colSpan={7}
-                  className="py-6 text-center text-sm text-slate-500"
+                  className="py-6 text-center text-sm text-content-secondary"
                 >
                   No ETFs match your filters.
                 </td>

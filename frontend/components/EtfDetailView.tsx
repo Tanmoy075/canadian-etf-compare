@@ -39,24 +39,24 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div>
             <div className="flex items-center gap-3">
-              <span className="inline-flex items-center rounded-full bg-brand-500/20 px-3 py-1 text-xs font-medium text-brand-100">
+              <span className="inline-flex items-center rounded-full bg-accent/20 px-3 py-1 text-xs font-medium text-accent-light">
                 {etf.ticker}
               </span>
               <span className="text-xs uppercase tracking-wide text-slate-400">
                 {etf.provider}
               </span>
             </div>
-            <h2 className="mt-2 text-lg font-semibold text-slate-50">
+            <h2 className="font-display mt-2 text-lg font-semibold text-content-primary">
               {etf.name}
             </h2>
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="mt-1 text-xs text-content-secondary">
               {etf.asset_class} &middot; {etf.currency} &middot; Risk:{" "}
               {etf.risk_rating}
             </p>
             {etf.tracking_index && (
-              <p className="mt-2 text-xs text-slate-400">
+              <p className="mt-2 text-xs text-content-secondary">
                 Tracking index:{" "}
-                <span className="text-slate-200">
+                <span className="text-content-primary">
                   {etf.tracking_index}
                 </span>
               </p>
@@ -93,10 +93,10 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
 
       {etf.performance && etf.performance.length > 0 && (
         <div className="card p-4">
-          <h3 className="mb-3 text-sm font-medium text-slate-100">
+          <h3 className="font-display mb-3 text-sm font-medium text-content-primary">
             Performance (5Y, 10Y, Since Inception)
           </h3>
-          <p className="mb-3 text-xs text-slate-400">
+          <p className="mb-3 text-xs text-content-secondary">
             Annualized return by period. Missing periods are omitted if data is not available.
           </p>
           <div className="h-64">
@@ -108,27 +108,27 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
                 }))}
                 margin={{ top: 8, right: 8, left: 0, bottom: 8 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#0a1628" />
                 <XAxis
                   dataKey="period"
-                  tick={{ fill: "#9ca3af", fontSize: 11 }}
+                  tick={{ fill: "#6B7A99", fontSize: 11 }}
                 />
                 <YAxis
                   tickFormatter={(v) => `${v}%`}
-                  tick={{ fill: "#9ca3af", fontSize: 11 }}
+                  tick={{ fill: "#6B7A99", fontSize: 11 }}
                 />
                 <Tooltip
                   formatter={(value: number) => [`${value.toFixed(2)}%`, "Return"]}
                   contentStyle={{
-                    backgroundColor: "#020617",
-                    border: "1px solid #1f2937",
+                    backgroundColor: "#050d1a",
+                    border: "1px solid rgba(99,179,237,0.15)",
                     fontSize: 12
                   }}
                 />
                 <Legend />
                 <Bar
                   dataKey="Return (%)"
-                  fill="#3b82f6"
+                  fill="#63B3ED"
                   radius={[4, 4, 0, 0]}
                 />
               </BarChart>
@@ -157,11 +157,11 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-md bg-slate-900/80 px-3 py-2">
-      <div className="text-[11px] uppercase tracking-wide text-slate-400">
+    <div className="rounded-md bg-secondary/80 px-3 py-2">
+      <div className="text-[11px] uppercase tracking-wide text-content-secondary">
         {label}
       </div>
-      <div className="mt-1 text-sm font-semibold text-slate-50">
+      <div className="mt-1 text-sm font-semibold text-content-primary">
         {value}
       </div>
     </div>
@@ -177,17 +177,17 @@ function BreakdownCard({
 }) {
   return (
     <div className="card p-4">
-      <h3 className="mb-3 text-sm font-medium text-slate-100">
+      <h3 className="font-display mb-3 text-sm font-medium text-content-primary">
         {title}
       </h3>
-      <ul className="space-y-2 text-xs text-slate-200">
+      <ul className="space-y-2 text-xs text-content-primary">
         {items.map((item) => (
           <li
             key={item.label}
             className="flex items-center justify-between"
           >
             <span>{item.label}</span>
-            <span className="text-slate-400">
+            <span className="text-content-secondary">
               {item.weight_pct.toFixed(1)} %
             </span>
           </li>

@@ -47,12 +47,12 @@ export default function HomePage() {
     <div className="space-y-4">
       <EtfFilters onChange={setFilters} />
       {loading && (
-        <div className="card p-4 text-sm text-slate-400">
+        <div className="card p-4 text-sm text-content-secondary">
           Loading ETFs...
         </div>
       )}
       {error && (
-        <div className="card border-red-500/40 bg-red-950/40 p-4 text-sm text-red-200">
+        <div className="card border-negative/40 bg-negative/10 p-4 text-sm text-negative">
           {error}
         </div>
       )}

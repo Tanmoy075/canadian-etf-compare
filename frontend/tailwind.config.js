@@ -7,15 +7,25 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        brand: {
-          50: "#f3f7ff",
-          100: "#e0ebff",
-          500: "#2653ff",
-          600: "#1e42cc",
-          900: "#0b1638"
-        }
-      }
-    }
+        primary: "#050d1a",
+        secondary: "#0a1628",
+        card: "#112240",
+        accent: {
+          DEFAULT: "#1a56db",
+          light: "#63B3ED",
+        },
+        content: {
+          primary: "#E8EDF5",
+          secondary: "#6B7A99",
+        },
+        positive: "#34D399",
+        negative: "#F87171",
+      },
+      fontFamily: {
+        display: ["var(--font-playfair)", "serif"],
+        sans: ["var(--font-ibm-plex)", "sans-serif"],
+      },
+    },
   },
   plugins: []
 };

@@ -16,6 +16,7 @@ import { ETFDetail, fetchCompare } from "../../lib/api";
 import { CompareItem, loadCompare, saveCompare } from "../../lib/compareStore";
 
 const PERFORMANCE_PERIODS = ["5Y", "10Y", "Since Inception"];
+const CHART_COLORS = ["#63B3ED", "#34D399", "#F87171", "#FBBF24", "#A78BFA"];
 
 function getBasketFromUrl(searchParams: URLSearchParams): CompareItem[] {
   const tickers = searchParams.get("tickers");
@@ -78,10 +79,10 @@ function ComparePageContent() {
       <div className="card p-4">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <h2 className="text-sm font-semibold text-slate-100">
+            <h2 className="font-display text-sm font-semibold text-content-primary">
               Compare basket
             </h2>
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="mt-1 text-xs text-content-secondary">
               You can compare up to 5 ETFs side by side.
             </p>
           </div>
@@ -97,19 +98,19 @@ function ComparePageContent() {
           {basket.map((item) => (
             <span
               key={item.ticker}
-              className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-3 py-1 text-slate-100"
+              className="inline-flex items-center gap-2 rounded-full bg-secondary px-3 py-1 text-content-primary"
             >
               <span className="font-semibold">{item.ticker}</span>
               <button
                 onClick={() => removeFromBasket(item.ticker)}
-                className="text-slate-400 hover:text-slate-200"
+                className="text-content-secondary hover:text-content-primary"
               >
                 ×
               </button>
             </span>
           ))}
           {!basket.length && (
-            <span className="text-slate-500">
+            <span className="text-content-secondary">
               No ETFs selected. Go back to the main page and add some to
               your basket.
             </span>
@@ -118,12 +119,12 @@ function ComparePageContent() {
       </div>
 
       {loading && (
-        <div className="card p-4 text-sm text-slate-400">
+        <div className="card p-4 text-sm text-content-secondary">
           Loading comparison...
         </div>
       )}
       {error && (
-        <div className="card border-red-500/40 bg-red-950/40 p-4 text-sm text-red-200">
+        <div className="card border-negative/40 bg-negative/10 p-4 text-sm text-negative">
           {error}
         </div>
       )}
@@ -131,7 +132,7 @@ function ComparePageContent() {
       {data.length > 0 && (
         <>
           <div className="card p-4">
-            <h3 className="mb-3 text-sm font-medium text-slate-100">
+            <h3 className="font-display mb-3 text-sm font-medium text-content-primary">
               Performance (5Y, 10Y, Since Inception)
             </h3>
             <div className="h-72">
@@ -140,36 +141,33 @@ function ComparePageContent() {
                   data={buildPerformanceChartData(data)}
                   margin={{ top: 8, right: 8, left: 0, bottom: 8 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#0a1628" />
                   <XAxis
                     dataKey="period"
-                    tick={{ fill: "#9ca3af", fontSize: 11 }}
+                    tick={{ fill: "#6B7A99", fontSize: 11 }}
                   />
                   <YAxis
                     tickFormatter={(v) => `${v}%`}
-                    tick={{ fill: "#9ca3af", fontSize: 11 }}
+                    tick={{ fill: "#6B7A99", fontSize: 11 }}
                   />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "#020617",
-                      border: "1px solid #1f2937",
+                      backgroundColor: "#050d1a",
+                      border: "1px solid rgba(99,179,237,0.15)",
                       fontSize: 12
                     }}
                     formatter={(value: number) => `${value.toFixed(2)}%`}
                   />
                   <Legend />
-                  {data.map((etf, i) => {
-                    const colors = ["#3b82f6", "#22c55e", "#eab308", "#a855f7", "#ef4444"];
-                    return (
+                  {data.map((etf, i) => (
                       <Bar
                         key={etf.ticker}
                         dataKey={etf.ticker}
                         name={etf.ticker}
-                        fill={colors[i % colors.length]}
+                        fill={CHART_COLORS[i % CHART_COLORS.length]}
                         radius={[4, 4, 0, 0]}
                       />
-                    );
-                  })}
+                    ))}
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -177,7 +175,7 @@ function ComparePageContent() {
 
           <div className="card overflow-x-auto p-4 text-xs">
             <table className="min-w-full text-left">
-            <thead className="border-b border-slate-800 text-[11px] uppercase text-slate-400">
+            <thead className="border-b border-accent-light/15 text-[11px] uppercase text-content-secondary">
               <tr>
                 <th className="py-2 pr-4">Metric</th>
                 {data.map((etf) => (
@@ -185,11 +183,11 @@ function ComparePageContent() {
                     <div className="flex flex-col">
                       <a
                         href={`/etf/${etf.ticker}`}
-                        className="text-xs font-semibold text-slate-50 hover:text-brand-400"
+                        className="font-display text-xs font-semibold text-content-primary hover:text-accent-light"
                       >
                         {etf.ticker}
                       </a>
-                      <span className="text-[11px] text-slate-400">
+                        <span className="font-display text-[11px] text-content-secondary">
                         {etf.name}
                       </span>
                     </div>
@@ -272,7 +270,7 @@ export default function ComparePage() {
   return (
     <Suspense
       fallback={
-        <div className="card p-4 text-sm text-slate-400">
+        <div className="card p-4 text-sm text-content-secondary">
           Loading compare...
         </div>
       }
@@ -288,10 +286,10 @@ function renderRow(
   selector: (e: ETFDetail) => string
 ) {
   return (
-    <tr className="border-b border-slate-900/60 last:border-0">
-      <td className="py-2 pr-4 text-slate-400">{label}</td>
+    <tr className="border-b border-accent-light/15 last:border-0">
+      <td className="py-2 pr-4 text-content-secondary">{label}</td>
       {etfs.map((etf) => (
-        <td key={etf.ticker + label} className="py-2 px-4 text-slate-100">
+        <td key={etf.ticker + label} className="py-2 px-4 text-content-primary">
           {selector(etf)}
         </td>
       ))}

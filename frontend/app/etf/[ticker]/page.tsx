@@ -32,7 +32,7 @@ export default function EtfDetailPage() {
 
   if (!ticker) {
     return (
-      <div className="card p-4 text-sm text-slate-400">
+        <div className="card p-4 text-sm text-content-secondary">
         Invalid ETF ticker.
       </div>
     );
@@ -40,7 +40,7 @@ export default function EtfDetailPage() {
 
   if (loading) {
     return (
-      <div className="card p-4 text-sm text-slate-400">
+        <div className="card p-4 text-sm text-content-secondary">
         Loading ETF details...
       </div>
     );
@@ -48,7 +48,7 @@ export default function EtfDetailPage() {
 
   if (error) {
     return (
-      <div className="card border-red-500/40 bg-red-950/40 p-4 text-sm text-red-200">
+        <div className="card border-negative/40 bg-negative/10 p-4 text-sm text-negative">
         {error}
       </div>
     );
@@ -56,7 +56,7 @@ export default function EtfDetailPage() {
 
   if (!data) {
     return (
-      <div className="card p-4 text-sm text-slate-400">
+        <div className="card p-4 text-sm text-content-secondary">
         ETF not found.
       </div>
     );
