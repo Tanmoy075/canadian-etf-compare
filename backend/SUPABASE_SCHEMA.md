@@ -30,8 +30,8 @@ The backend expects these tables and columns:
 |--------|------|----------|
 | ticker | text | yes (FK to etfs) |
 | label | text | yes |
-| weight_pct | numeric | yes |
-| type | text | yes ("sector" for sector breakdown, "holding" for top holdings) |
+| weight | numeric | yes |
+| holding_type | text | yes ("sector" for sector breakdown, "holding" for top holdings) |
 
 ## Environment variables
 Set `SUPABASE_URL` and `SUPABASE_ANON_KEY` (create `backend/.env` from `.env.example` or configure in your deployment platform).

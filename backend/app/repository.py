@@ -101,18 +101,18 @@ class ETFRepository:
             for p in (perf_result.data or [])
         ]
 
-        # Fetch holdings - assume type column: 'sector' or 'holding'
+        # Fetch holdings - columns: label, weight, holding_type ('sector' or 'holding')
         holdings_result = (
             client.table("etf_holdings")
-            .select("label,weight_pct,type")
+            .select("label,weight,holding_type")
             .eq("ticker", ticker)
             .execute()
         )
         sector_breakdown: List[HoldingsBreakdownItem] = []
         top_holdings: List[HoldingsBreakdownItem] = []
         for h in holdings_result.data or []:
-            item = HoldingsBreakdownItem(label=h["label"], weight_pct=float(h["weight_pct"]))
-            if h.get("type", "").lower() == "holding":
+            item = HoldingsBreakdownItem(label=h["label"], weight_pct=float(h["weight"]))
+            if h.get("holding_type", "").lower() == "holding":
                 top_holdings.append(item)
             else:
                 sector_breakdown.append(item)
