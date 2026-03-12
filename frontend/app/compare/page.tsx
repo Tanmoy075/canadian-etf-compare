@@ -133,7 +133,7 @@ function ComparePageContent() {
         <>
           <div className="card p-4">
             <h3 className="font-display mb-3 text-sm font-medium text-content-primary">
-              Performance (5Y, 10Y, Since Inception)
+              Performance Comparison (1Y, 3Y, 5Y, Since Inception)
             </h3>
             <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
