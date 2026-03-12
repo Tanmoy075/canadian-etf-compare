@@ -15,7 +15,7 @@ import {
 import { ETFDetail, fetchCompare } from "../../lib/api";
 import { CompareItem, loadCompare, saveCompare } from "../../lib/compareStore";
 
-const PERFORMANCE_PERIODS = ["5Y", "Since Inception"];
+const PERFORMANCE_PERIODS = ["1Y", "3Y", "5Y", "Since Inception"];
 const CHART_COLORS = ["#63B3ED", "#34D399", "#F87171", "#FBBF24", "#A78BFA"];
 
 function getBasketFromUrl(searchParams: URLSearchParams): CompareItem[] {
@@ -304,7 +304,10 @@ function getPerformanceValue(etf: ETFDetail, period: string): number | null {
 }
 
 function buildPerformanceChartData(etfs: ETFDetail[]) {
-  return PERFORMANCE_PERIODS.map((period) => {
+  return PERFORMANCE_PERIODS.filter((period) => {
+    const hasData = etfs.some((etf) => getPerformanceValue(etf, period) != null);
+    return hasData;
+  }).map((period) => {
     const point: Record<string, string | number> = { period };
     etfs.forEach((etf) => {
       const v = getPerformanceValue(etf, period);

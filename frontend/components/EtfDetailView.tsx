@@ -10,7 +10,7 @@ import {
   YAxis
 } from "recharts";
 
-const PERFORMANCE_DISPLAY_ORDER = ["5Y", "10Y", "Since Inception", "3Y", "1Y"];
+const PERFORMANCE_DISPLAY_ORDER = ["1Y", "3Y", "5Y", "10Y", "Since Inception"];
 
 function orderPerformance(performance: PerformancePoint[]) {
   const byPeriod = new Map(
@@ -24,11 +24,6 @@ function orderPerformance(performance: PerformancePoint[]) {
       byPeriod.get(label.replace(/\s+/g, " ").toLowerCase());
     if (p) ordered.push(p);
   }
-  performance.forEach((p) => {
-    const k = p.period.toLowerCase().replace(/\s+/g, " ");
-    if (!PERFORMANCE_DISPLAY_ORDER.some((l) => l.toLowerCase() === k))
-      ordered.push(p);
-  });
   return ordered;
 }
 
@@ -94,7 +89,7 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
       {etf.performance && etf.performance.length > 0 && (
         <div className="card p-4">
           <h3 className="font-display mb-3 text-sm font-medium text-content-primary">
-            Performance (5Y, 10Y, Since Inception)
+            Performance over Period
           </h3>
           <p className="mb-3 text-xs text-content-secondary">
             Annualized return by period. Missing periods are omitted if data is not available.
