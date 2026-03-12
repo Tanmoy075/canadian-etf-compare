@@ -3,10 +3,10 @@
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import {
-  Bar,
-  BarChart,
   CartesianGrid,
   Legend,
+  Line,
+  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -135,20 +135,20 @@ function ComparePageContent() {
             <h3 className="font-display mb-3 text-sm font-medium text-content-primary">
               Performance Comparison (1Y, 3Y, 5Y, Since Inception)
             </h3>
-            <div className="h-72">
+            <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart
+                <LineChart
                   data={buildPerformanceChartData(data)}
                   margin={{ top: 8, right: 8, left: 0, bottom: 8 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#0a1628" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(99,179,237,0.1)" />
                   <XAxis
                     dataKey="period"
-                    tick={{ fill: "#A8B8D0", fontSize: 13 }}
+                    tick={{ fill: "#6B7A99", fontSize: 13 }}
                   />
                   <YAxis
                     tickFormatter={(v) => `${v}%`}
-                    tick={{ fill: "#A8B8D0", fontSize: 13 }}
+                    tick={{ fill: "#6B7A99", fontSize: 13 }}
                   />
                   <Tooltip
                     contentStyle={{
@@ -156,19 +156,25 @@ function ComparePageContent() {
                       border: "1px solid rgba(99,179,237,0.15)",
                       fontSize: 12
                     }}
-                    formatter={(value: number) => `${value.toFixed(2)}%`}
+                    formatter={(value: unknown, name: string) =>
+                      typeof value === "number" ? `${name}: ${value.toFixed(2)}%` : null
+                    }
                   />
                   <Legend wrapperStyle={{ fontSize: 13 }} formatter={(value) => <span style={{ color: "#E8EDF5" }}>{value}</span>} />
                   {data.map((etf, i) => (
-                      <Bar
-                        key={etf.ticker}
-                        dataKey={etf.ticker}
-                        name={etf.ticker}
-                        fill={CHART_COLORS[i % CHART_COLORS.length]}
-                        radius={[4, 4, 0, 0]}
-                      />
-                    ))}
-                </BarChart>
+                    <Line
+                      key={etf.ticker}
+                      type="monotone"
+                      dataKey={etf.ticker}
+                      name={etf.ticker}
+                      stroke={CHART_COLORS[i % CHART_COLORS.length]}
+                      strokeWidth={2.5}
+                      connectNulls={false}
+                      dot={{ r: 5, strokeWidth: 2 }}
+                      activeDot={{ r: 7 }}
+                    />
+                  ))}
+                </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
@@ -308,10 +314,10 @@ function buildPerformanceChartData(etfs: ETFDetail[]) {
     const hasData = etfs.some((etf) => getPerformanceValue(etf, period) != null);
     return hasData;
   }).map((period) => {
-    const point: Record<string, string | number> = { period };
+    const point: Record<string, string | number | null> = { period };
     etfs.forEach((etf) => {
       const v = getPerformanceValue(etf, period);
-      point[etf.ticker] = v ?? 0;
+      point[etf.ticker] = v ?? null;
     });
     return point;
   });

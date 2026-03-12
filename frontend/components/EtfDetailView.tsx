@@ -1,9 +1,9 @@
 import { ETFDetail, PerformancePoint } from "../lib/api";
 import {
-  Bar,
-  BarChart,
   CartesianGrid,
   Legend,
+  Line,
+  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -12,19 +12,21 @@ import {
 
 const PERFORMANCE_DISPLAY_ORDER = ["1Y", "3Y", "5Y", "10Y", "Since Inception"];
 
-function orderPerformance(performance: PerformancePoint[]) {
+function buildLineChartData(
+  performance: PerformancePoint[],
+  ticker: string
+): { period: string; [key: string]: string | number | null }[] {
   const byPeriod = new Map(
     performance.map((p) => [p.period.toLowerCase().replace(/\s+/g, " "), p])
   );
-  const ordered: PerformancePoint[] = [];
-  for (const label of PERFORMANCE_DISPLAY_ORDER) {
+  return PERFORMANCE_DISPLAY_ORDER.map((label) => {
     const key = label.toLowerCase();
     const p =
       byPeriod.get(key) ??
       byPeriod.get(label.replace(/\s+/g, " ").toLowerCase());
-    if (p) ordered.push(p);
-  }
-  return ordered;
+    const value = p ? p.return_pct : null;
+    return { period: label, [ticker]: value };
+  });
 }
 
 export function EtfDetailView({ etf }: { etf: ETFDetail }) {
@@ -94,26 +96,25 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
           <p className="mb-3 text-xs text-content-secondary">
             Annualized return by period. Missing periods are omitted if data is not available.
           </p>
-          <div className="h-64">
+          <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={orderPerformance(etf.performance).map((p) => ({
-                  period: p.period,
-                  "Return (%)": p.return_pct
-                }))}
+              <LineChart
+                data={buildLineChartData(etf.performance, etf.ticker)}
                 margin={{ top: 8, right: 8, left: 0, bottom: 8 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="#0a1628" />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(99,179,237,0.1)" />
                 <XAxis
                   dataKey="period"
-                  tick={{ fill: "#6B7A99", fontSize: 11 }}
+                  tick={{ fill: "#6B7A99", fontSize: 13 }}
                 />
                 <YAxis
                   tickFormatter={(v) => `${v}%`}
-                  tick={{ fill: "#6B7A99", fontSize: 11 }}
+                  tick={{ fill: "#6B7A99", fontSize: 13 }}
                 />
                 <Tooltip
-                  formatter={(value: number) => [`${value.toFixed(2)}%`, "Return"]}
+                  formatter={(value: unknown, name: string) =>
+                    typeof value === "number" ? `${name}: ${value.toFixed(2)}%` : null
+                  }
                   contentStyle={{
                     backgroundColor: "#050d1a",
                     border: "1px solid rgba(99,179,237,0.15)",
@@ -121,12 +122,17 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
                   }}
                 />
                 <Legend />
-                <Bar
-                  dataKey="Return (%)"
-                  fill="#63B3ED"
-                  radius={[4, 4, 0, 0]}
+                <Line
+                  type="monotone"
+                  dataKey={etf.ticker}
+                  name={etf.ticker}
+                  stroke="#63B3ED"
+                  strokeWidth={2.5}
+                  connectNulls={false}
+                  dot={{ r: 5, strokeWidth: 2 }}
+                  activeDot={{ r: 7 }}
                 />
-              </BarChart>
+              </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
