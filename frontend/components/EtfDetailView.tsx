@@ -1,9 +1,9 @@
 import { ETFDetail, PerformancePoint } from "../lib/api";
 import {
+  Bar,
+  BarChart,
   CartesianGrid,
   Legend,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -12,21 +12,24 @@ import {
 
 const PERFORMANCE_DISPLAY_ORDER = ["1Y", "3Y", "5Y", "10Y", "Since Inception"];
 
-function buildLineChartData(
+function buildBarChartData(
   performance: PerformancePoint[],
   ticker: string
-): { period: string; [key: string]: string | number | null }[] {
+): { period: string; [key: string]: string | number }[] {
   const byPeriod = new Map(
     performance.map((p) => [p.period.toLowerCase().replace(/\s+/g, " "), p])
   );
-  return PERFORMANCE_DISPLAY_ORDER.map((label) => {
+  const result: { period: string; [key: string]: string | number }[] = [];
+  for (const label of PERFORMANCE_DISPLAY_ORDER) {
     const key = label.toLowerCase();
     const p =
       byPeriod.get(key) ??
       byPeriod.get(label.replace(/\s+/g, " ").toLowerCase());
-    const value = p ? p.return_pct : null;
-    return { period: label, [ticker]: value };
-  });
+    if (p) {
+      result.push({ period: label, [ticker]: p.return_pct });
+    }
+  }
+  return result;
 }
 
 export function EtfDetailView({ etf }: { etf: ETFDetail }) {
@@ -98,9 +101,11 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
           </p>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={buildLineChartData(etf.performance, etf.ticker)}
+              <BarChart
+                data={buildBarChartData(etf.performance, etf.ticker)}
                 margin={{ top: 8, right: 8, left: 0, bottom: 8 }}
+                barCategoryGap="30%"
+                barGap={4}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(99,179,237,0.1)" />
                 <XAxis
@@ -122,17 +127,14 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
                   }}
                 />
                 <Legend />
-                <Line
-                  type="monotone"
+                <Bar
                   dataKey={etf.ticker}
                   name={etf.ticker}
-                  stroke="#63B3ED"
-                  strokeWidth={2.5}
-                  connectNulls={false}
-                  dot={{ r: 5, strokeWidth: 2 }}
-                  activeDot={{ r: 7 }}
+                  fill="#63B3ED"
+                  barSize={28}
+                  radius={[4, 4, 0, 0]}
                 />
-              </LineChart>
+              </BarChart>
             </ResponsiveContainer>
           </div>
         </div>

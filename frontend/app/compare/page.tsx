@@ -3,10 +3,10 @@
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import {
+  Bar,
+  BarChart,
   CartesianGrid,
   Legend,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -137,9 +137,11 @@ function ComparePageContent() {
             </h3>
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart
+                <BarChart
                   data={buildPerformanceChartData(data)}
                   margin={{ top: 8, right: 8, left: 0, bottom: 8 }}
+                  barCategoryGap="30%"
+                  barGap={4}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(99,179,237,0.1)" />
                   <XAxis
@@ -162,19 +164,16 @@ function ComparePageContent() {
                   />
                   <Legend wrapperStyle={{ fontSize: 13 }} formatter={(value) => <span style={{ color: "#E8EDF5" }}>{value}</span>} />
                   {data.map((etf, i) => (
-                    <Line
+                    <Bar
                       key={etf.ticker}
-                      type="monotone"
                       dataKey={etf.ticker}
                       name={etf.ticker}
-                      stroke={CHART_COLORS[i % CHART_COLORS.length]}
-                      strokeWidth={2.5}
-                      connectNulls={false}
-                      dot={{ r: 5, strokeWidth: 2 }}
-                      activeDot={{ r: 7 }}
+                      fill={CHART_COLORS[i % CHART_COLORS.length]}
+                      barSize={18}
+                      radius={[4, 4, 0, 0]}
                     />
                   ))}
-                </LineChart>
+                </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
@@ -314,10 +313,10 @@ function buildPerformanceChartData(etfs: ETFDetail[]) {
     const hasData = etfs.some((etf) => getPerformanceValue(etf, period) != null);
     return hasData;
   }).map((period) => {
-    const point: Record<string, string | number | null> = { period };
+    const point: Record<string, string | number> = { period };
     etfs.forEach((etf) => {
       const v = getPerformanceValue(etf, period);
-      point[etf.ticker] = v ?? null;
+      point[etf.ticker] = v ?? 0;
     });
     return point;
   });
