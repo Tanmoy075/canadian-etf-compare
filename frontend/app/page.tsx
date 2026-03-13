@@ -56,7 +56,7 @@ export default function HomePage() {
           {error}
         </div>
       )}
-      {data && <EtfTable etfs={data.items as ETF[]} total={data.total} />}
+      {data && <EtfTable etfs={[...(data.items as ETF[])].sort((a, b) => a.ticker.localeCompare(b.ticker))} total={data.total} />}
     </div>
   );
 }
