@@ -192,7 +192,7 @@ function ComparePageContent() {
                       >
                         {etf.ticker}
                       </a>
-                        <span className="font-display text-[11px] text-[#A8B8D0]">
+                        <span className="font-display font-bold text-[11px] text-[#A8B8D0]">
                         {etf.name}
                       </span>
                     </div>

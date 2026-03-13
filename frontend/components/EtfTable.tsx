@@ -84,7 +84,7 @@ export function EtfTable({
                     >
                       {etf.ticker}
                     </a>
-                    <span className="font-display text-sm text-[#A8B8D0]">
+                    <span className="font-display font-bold text-sm text-[#A8B8D0]">
                       {etf.name}
                     </span>
                   </div>

@@ -46,7 +46,7 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
                 {etf.provider}
               </span>
             </div>
-            <h2 className="font-display mt-2 text-lg font-semibold text-content-primary">
+            <h2 className="font-display mt-2 text-lg font-bold text-content-primary">
               {etf.name}
             </h2>
             <p className="mt-1 text-xs text-[#A8B8D0]">
