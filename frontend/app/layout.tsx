@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-6">
           <header className="mb-6 flex items-center justify-between gap-4 border-b border-accent-light/15 pb-4">
             <div>
-              <h1 className="font-display text-xl font-semibold tracking-tight text-content-primary">
+              <h1 className="font-display text-2xl font-semibold tracking-tight text-content-primary">
                 Canadian ETF Compare
               </h1>
               <p className="mt-1 text-sm text-content-secondary">
