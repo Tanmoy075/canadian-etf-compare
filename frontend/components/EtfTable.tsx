@@ -59,7 +59,7 @@ export function EtfTable({
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full text-left text-sm">
-          <thead className="border-b border-border text-sm uppercase tracking-wide text-content-secondary">
+          <thead className="border-b border-border text-sm font-semibold uppercase tracking-wide text-content-secondary">
             <tr>
               <th className="py-2 pr-4">ETF</th>
               <th className="py-2 px-4">Provider</th>
@@ -80,28 +80,28 @@ export function EtfTable({
                   <div className="flex flex-col">
                     <a
                       href={`/etf/${etf.ticker}`}
-                      className="font-display text-base font-medium text-heading hover:text-accent"
+                      className="text-base font-bold text-heading hover:text-accent"
                     >
                       {etf.ticker}
                     </a>
-                    <span className="font-display font-bold text-sm text-content-primary">
+                    <span className="text-sm font-semibold text-content-primary">
                       {etf.name}
                     </span>
                   </div>
                 </td>
-                <td className="py-2 px-4 text-sm text-content-primary">
+                <td className="py-2 px-4 text-sm font-normal text-content-primary">
                   {etf.provider}
                 </td>
-                <td className="py-2 px-4 text-sm text-content-primary">
+                <td className="py-2 px-4 text-sm font-normal text-content-primary">
                   {etf.asset_class}
                 </td>
-                <td className="py-2 px-4 text-sm text-content-primary">
+                <td className="py-2 px-4 text-sm font-normal text-content-primary">
                   {etf.mer.toFixed(2)}
                 </td>
-                <td className="py-2 px-4 text-sm text-content-primary">
+                <td className="py-2 px-4 text-sm font-normal text-content-primary">
                   {etf.distribution_yield.toFixed(2)}
                 </td>
-                <td className="py-2 px-4 text-sm text-content-primary">
+                <td className="py-2 px-4 text-sm font-normal text-content-primary">
                   {etf.risk_rating}
                 </td>
                 <td className="py-2 pl-4 text-right">

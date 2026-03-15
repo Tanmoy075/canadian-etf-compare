@@ -79,7 +79,7 @@ function ComparePageContent() {
       <div className="card p-4">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <h2 className="font-display text-2xl font-bold text-heading">
+            <h2 className="text-2xl font-bold text-heading">
               Compare basket
             </h2>
             <p className="mt-1 text-xs text-content-secondary">
@@ -100,7 +100,7 @@ function ComparePageContent() {
               key={item.ticker}
               className="inline-flex items-center gap-2 rounded-full bg-badge-bg px-3 py-1 text-badge-text"
             >
-              <span className="text-base font-semibold">{item.ticker}</span>
+              <span className="text-base font-bold">{item.ticker}</span>
               <button
                 onClick={() => removeFromBasket(item.ticker)}
                 className="text-content-secondary hover:text-badge-text"
@@ -132,7 +132,7 @@ function ComparePageContent() {
       {data.length > 0 && (
         <>
           <div className="card p-4">
-            <h3 className="font-display mb-3 text-lg font-bold text-heading">
+            <h3 className="mb-3 text-lg font-bold text-heading">
               Performance Comparison (1Y, 3Y, 5Y, Since Inception)
             </h3>
             <div className="h-[300px]">
@@ -180,7 +180,7 @@ function ComparePageContent() {
 
           <div className="card overflow-x-auto p-4">
             <table className="min-w-full text-left">
-            <thead className="border-b border-border text-sm uppercase text-content-secondary">
+            <thead className="border-b border-border text-sm font-semibold uppercase text-content-secondary">
               <tr>
                 <th className="py-2 pr-4">Metric</th>
                 {data.map((etf) => (
@@ -188,11 +188,11 @@ function ComparePageContent() {
                     <div className="flex flex-col">
                       <a
                         href={`/etf/${etf.ticker}`}
-                        className="font-display text-base font-semibold text-heading hover:text-accent"
+                        className="text-base font-bold text-heading hover:text-accent"
                       >
                         {etf.ticker}
                       </a>
-                        <span className="font-display font-bold text-sm text-content-primary">
+                        <span className="text-sm font-semibold text-content-primary">
                         {etf.name}
                       </span>
                     </div>
@@ -284,9 +284,9 @@ function renderRow(
 ) {
   return (
     <tr className="border-b border-border last:border-0">
-      <td className="py-2 pr-4 text-sm text-content-secondary">{label}</td>
+      <td className="py-2 pr-4 text-sm font-semibold text-content-secondary">{label}</td>
       {etfs.map((etf) => (
-        <td key={etf.ticker + label} className="py-2 px-4 text-sm text-content-primary">
+        <td key={etf.ticker + label} className="py-2 px-4 text-sm font-normal text-content-primary">
           {selector(etf)}
         </td>
       ))}

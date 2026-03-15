@@ -1,17 +1,12 @@
 import "./globals.css";
 import type { ReactNode } from "react";
-import { Playfair_Display, IBM_Plex_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import { CompareBasketLink } from "../components/CompareBasketLink";
 
-const playfair = Playfair_Display({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-playfair",
-});
-
-const ibmPlexSans = IBM_Plex_Sans({
   weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
-  variable: "--font-ibm-plex",
+  variable: "--font-plus-jakarta-sans",
 });
 
 export const metadata = {
@@ -21,12 +16,12 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${playfair.variable} ${ibmPlexSans.variable}`}>
+    <html lang="en" className={plusJakartaSans.variable}>
       <body className="font-sans min-h-screen bg-primary text-content-primary">
         <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-6">
           <header className="mb-6 flex items-center justify-between gap-4 border-b-2 border-accent bg-card pb-4">
             <div>
-              <h1 className="font-display text-2xl font-semibold tracking-tight text-heading">
+              <h1 className="text-2xl font-bold tracking-tight text-heading">
                 Canadian ETF Compare
               </h1>
               <p className="mt-1 text-sm text-content-secondary">

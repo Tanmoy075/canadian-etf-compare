@@ -27,8 +27,7 @@ module.exports = {
         border: "#E8EDF5",
       },
       fontFamily: {
-        display: ["var(--font-playfair)", "serif"],
-        sans: ["var(--font-ibm-plex)", "sans-serif"],
+        sans: ["var(--font-plus-jakarta-sans)", "Plus Jakarta Sans", "sans-serif"],
       },
     },
   },

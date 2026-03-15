@@ -39,17 +39,17 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div>
             <div className="flex items-center gap-3">
-              <span className="inline-flex items-center rounded-full bg-badge-bg px-3 py-1 text-xs font-medium text-badge-text">
+              <span className="inline-flex items-center rounded-full bg-badge-bg px-3 py-1 text-xs font-bold text-badge-text">
                 {etf.ticker}
               </span>
-              <span className="text-xs uppercase tracking-wide text-content-secondary">
+              <span className="text-xs font-semibold uppercase tracking-wide text-content-secondary">
                 {etf.provider}
               </span>
             </div>
-            <h2 className="font-display mt-2 text-lg font-bold text-heading">
+            <h2 className="mt-2 text-lg font-semibold text-heading">
               {etf.name}
             </h2>
-            <p className="mt-1 text-xs text-content-secondary">
+            <p className="mt-1 text-xs font-normal text-content-secondary">
               {etf.asset_class} &middot; {etf.currency} &middot; Risk:{" "}
               {etf.risk_rating}
             </p>
@@ -93,7 +93,7 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
 
       {etf.performance && etf.performance.length > 0 && (
         <div className="card p-4">
-          <h3 className="font-display mb-3 text-sm font-medium text-heading">
+          <h3 className="mb-3 text-sm font-semibold text-heading">
             Performance over Period
           </h3>
           <p className="mb-3 text-xs text-content-secondary">
@@ -161,10 +161,10 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
 function Metric({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-md bg-primary px-3 py-2">
-      <div className="text-[11px] uppercase tracking-wide text-content-secondary">
+      <div className="text-[11px] font-semibold uppercase tracking-wide text-content-secondary">
         {label}
       </div>
-      <div className="mt-1 text-sm font-semibold text-content-primary">
+      <div className="mt-1 text-sm font-normal text-content-primary">
         {value}
       </div>
     </div>
@@ -180,17 +180,17 @@ function BreakdownCard({
 }) {
   return (
     <div className="card p-4">
-      <h3 className="font-display mb-3 text-sm font-medium text-heading">
+      <h3 className="mb-3 text-sm font-semibold text-heading">
         {title}
       </h3>
-      <ul className="space-y-2 text-xs text-content-primary">
+      <ul className="space-y-2 text-xs font-normal text-content-primary">
         {items.map((item) => (
           <li
             key={item.label}
             className="flex items-center justify-between"
           >
             <span>{item.label}</span>
-            <span className="font-bold text-content-primary">
+            <span className="font-semibold text-content-primary">
               {item.weight_pct.toFixed(1)} %
             </span>
           </li>
