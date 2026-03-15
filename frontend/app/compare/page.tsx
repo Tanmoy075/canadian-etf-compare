@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -50,37 +50,77 @@ function ComparePageContent() {
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const basket = slots.filter((s): s is CompareItem => s != null);
-  const selectedTickers = new Set(basket.map((b) => b.ticker));
+  // Stable derived state: only changes when confirmed selection changes (not on search keystrokes)
+  const basket = useMemo(
+    () => slots.filter((s): s is CompareItem => s != null),
+    [slots]
+  );
+  const selectedTickers = useMemo(
+    () => new Set(basket.map((b) => b.ticker)),
+    [basket]
+  );
 
-  // Sync URL and storage when slots change
+  // Stable string key for confirmed tickers — used as dependency so fetch only runs when selection actually changes
+  const confirmedTickersKey = useMemo(
+    () =>
+      slots
+        .filter((s): s is CompareItem => s != null)
+        .map((s) => s.ticker)
+        .sort()
+        .join(","),
+    [slots]
+  );
+  // Sync URL and storage when confirmed selection changes (stable key)
+  const orderedTickerKey = useMemo(
+    () => basket.map((b) => b.ticker).join(","),
+    [basket]
+  );
   useEffect(() => {
     saveCompare(basket);
-    const tickers = basket.map((b) => b.ticker).join(",");
-    const url = tickers ? `/compare?tickers=${tickers}` : "/compare";
+    const url = orderedTickerKey ? `/compare?tickers=${orderedTickerKey}` : "/compare";
     window.history.replaceState(null, "", url);
-  }, [basket]);
+  }, [orderedTickerKey, basket]);
 
-  // Load comparison data when basket has 2+
-  useEffect(() => {
-    if (basket.length < 2) {
+  // Fetch comparison data — only depends on confirmed tickers, not search input
+  const fetchComparisonData = useCallback(async (tickers: string[]) => {
+    if (tickers.length < 2) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetchCompare(tickers);
+      setData(res.items);
+    } catch (e) {
+      console.error(e);
+      setError("Could not load comparison data. Please try again.");
       setData([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Load comparison data only when confirmed tickers change, with 300ms debounce
+  const fetchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (fetchDebounceRef.current) {
+      clearTimeout(fetchDebounceRef.current);
+      fetchDebounceRef.current = null;
+    }
+    const tickers = confirmedTickersKey ? confirmedTickersKey.split(",") : [];
+    if (tickers.length < 2) {
+      setData([]);
+      setError(null);
       return;
     }
-    (async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetchCompare(basket.map((b) => b.ticker));
-        setData(res.items);
-      } catch (e) {
-        console.error(e);
-        setError("Failed to load comparison data.");
-      } finally {
-        setLoading(false);
+    fetchDebounceRef.current = setTimeout(() => {
+      fetchDebounceRef.current = null;
+      fetchComparisonData(tickers);
+    }, 300);
+    return () => {
+      if (fetchDebounceRef.current) {
+        clearTimeout(fetchDebounceRef.current);
       }
-    })();
-  }, [basket]);
+    };
+  }, [confirmedTickersKey, fetchComparisonData]);
 
   // Search API when query changes
   const runSearch = useCallback(async (q: string) => {
@@ -256,14 +296,21 @@ function ComparePageContent() {
         </div>
       )}
 
-      {loading && basket.length >= 2 && (
+      {loading && confirmedTickersKey && confirmedTickersKey.split(",").length >= 2 && (
         <div className="card p-4 text-sm text-content-secondary">
           Loading comparison...
         </div>
       )}
-      {error && (
+      {error && confirmedTickersKey && confirmedTickersKey.split(",").length >= 2 && (
         <div className="card border-negative bg-negative/10 p-4 text-sm text-negative">
-          {error}
+          <p>{error}</p>
+          <button
+            type="button"
+            onClick={() => fetchComparisonData(confirmedTickersKey.split(","))}
+            className="btn-primary mt-3"
+          >
+            Retry
+          </button>
         </div>
       )}
 
