@@ -7,20 +7,24 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#050d1a",
-        secondary: "#0a1628",
-        card: "#112240",
+        primary: "#F7FAFB",
+        card: "#FFFFFF",
         accent: {
-          DEFAULT: "#1a56db",
-          light: "#63B3ED",
+          DEFAULT: "#1D9E75",
+          hover: "#0F6E56",
         },
+        heading: "#0C447C",
         content: {
-          primary: "#E8EDF5",
+          primary: "#333333",
           secondary: "#6B7A99",
-          label: "#A8B8D0",
         },
-        positive: "#34D399",
-        negative: "#F87171",
+        badge: {
+          bg: "#E1F5EE",
+          text: "#0F6E56",
+        },
+        positive: "#1D9E75",
+        negative: "#E24B4A",
+        border: "#E8EDF5",
       },
       fontFamily: {
         display: ["var(--font-playfair)", "serif"],

@@ -39,22 +39,22 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div>
             <div className="flex items-center gap-3">
-              <span className="inline-flex items-center rounded-full bg-accent/20 px-3 py-1 text-xs font-medium text-accent-light">
+              <span className="inline-flex items-center rounded-full bg-badge-bg px-3 py-1 text-xs font-medium text-badge-text">
                 {etf.ticker}
               </span>
-              <span className="text-xs uppercase tracking-wide text-[#A8B8D0]">
+              <span className="text-xs uppercase tracking-wide text-content-secondary">
                 {etf.provider}
               </span>
             </div>
-            <h2 className="font-display mt-2 text-lg font-bold text-content-primary">
+            <h2 className="font-display mt-2 text-lg font-bold text-heading">
               {etf.name}
             </h2>
-            <p className="mt-1 text-xs text-[#A8B8D0]">
+            <p className="mt-1 text-xs text-content-secondary">
               {etf.asset_class} &middot; {etf.currency} &middot; Risk:{" "}
               {etf.risk_rating}
             </p>
             {etf.tracking_index && (
-              <p className="mt-2 text-xs text-[#A8B8D0]">
+              <p className="mt-2 text-xs text-content-secondary">
                 Tracking index:{" "}
                 <span className="text-content-primary">
                   {etf.tracking_index}
@@ -93,7 +93,7 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
 
       {etf.performance && etf.performance.length > 0 && (
         <div className="card p-4">
-          <h3 className="font-display mb-3 text-sm font-medium text-content-primary">
+          <h3 className="font-display mb-3 text-sm font-medium text-heading">
             Performance over Period
           </h3>
           <p className="mb-3 text-xs text-content-secondary">
@@ -107,7 +107,7 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
                 barCategoryGap="30%"
                 barGap={4}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(99,179,237,0.1)" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E8EDF5" />
                 <XAxis
                   dataKey="period"
                   tick={{ fill: "#6B7A99", fontSize: 13 }}
@@ -121,8 +121,8 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
                     typeof value === "number" ? `${name}: ${value.toFixed(2)}%` : null
                   }
                   contentStyle={{
-                    backgroundColor: "#050d1a",
-                    border: "1px solid rgba(99,179,237,0.15)",
+                    backgroundColor: "#FFFFFF",
+                    border: "1px solid #E8EDF5",
                     fontSize: 12
                   }}
                 />
@@ -130,7 +130,7 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
                 <Bar
                   dataKey={etf.ticker}
                   name={etf.ticker}
-                  fill="#63B3ED"
+                  fill="#0C447C"
                   barSize={28}
                   radius={[4, 4, 0, 0]}
                 />
@@ -160,7 +160,7 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-md bg-secondary/80 px-3 py-2">
+    <div className="rounded-md bg-primary px-3 py-2">
       <div className="text-[11px] uppercase tracking-wide text-content-secondary">
         {label}
       </div>
@@ -180,7 +180,7 @@ function BreakdownCard({
 }) {
   return (
     <div className="card p-4">
-      <h3 className="font-display mb-3 text-sm font-medium text-content-primary">
+      <h3 className="font-display mb-3 text-sm font-medium text-heading">
         {title}
       </h3>
       <ul className="space-y-2 text-xs text-content-primary">

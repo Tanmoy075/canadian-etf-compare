@@ -41,7 +41,7 @@ export function EtfTable({
 
   return (
     <div className="card p-4">
-        <div className="mb-3 flex items-center justify-between text-xs text-[#A8B8D0]">
+        <div className="mb-3 flex items-center justify-between text-xs text-content-secondary">
         <span>{total} ETFs found</span>
         <span>
           Compare basket: {basket.length} selected (up to 5).{" "}
@@ -51,7 +51,7 @@ export function EtfTable({
                 ? `/compare?tickers=${basket.map((b) => b.ticker).join(",")}`
                 : "/compare"
             }
-            className="text-accent-light underline"
+            className="text-accent underline hover:text-accent-hover"
           >
             View comparison
           </a>
@@ -59,7 +59,7 @@ export function EtfTable({
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full text-left text-sm">
-          <thead className="border-b border-accent-light/15 text-sm uppercase tracking-wide text-[#A8B8D0]">
+          <thead className="border-b border-border text-sm uppercase tracking-wide text-content-secondary">
             <tr>
               <th className="py-2 pr-4">ETF</th>
               <th className="py-2 px-4">Provider</th>
@@ -74,34 +74,34 @@ export function EtfTable({
             {etfs.map((etf) => (
               <tr
                 key={etf.ticker}
-                className="border-b border-accent-light/15 last:border-0 hover:bg-secondary/40"
+                className="border-b border-border last:border-0 hover:bg-primary"
               >
                 <td className="py-2 pr-4 align-middle">
                   <div className="flex flex-col">
                     <a
                       href={`/etf/${etf.ticker}`}
-                      className="font-display text-base font-medium text-content-primary hover:text-accent-light"
+                      className="font-display text-base font-medium text-heading hover:text-accent"
                     >
                       {etf.ticker}
                     </a>
-                    <span className="font-display font-bold text-sm text-[#A8B8D0]">
+                    <span className="font-display font-bold text-sm text-content-primary">
                       {etf.name}
                     </span>
                   </div>
                 </td>
-                <td className="py-2 px-4 text-sm text-[#E8EDF5]">
+                <td className="py-2 px-4 text-sm text-content-primary">
                   {etf.provider}
                 </td>
-                <td className="py-2 px-4 text-sm text-[#E8EDF5]">
+                <td className="py-2 px-4 text-sm text-content-primary">
                   {etf.asset_class}
                 </td>
-                <td className="py-2 px-4 text-sm text-[#E8EDF5]">
+                <td className="py-2 px-4 text-sm text-content-primary">
                   {etf.mer.toFixed(2)}
                 </td>
-                <td className="py-2 px-4 text-sm text-[#E8EDF5]">
+                <td className="py-2 px-4 text-sm text-content-primary">
                   {etf.distribution_yield.toFixed(2)}
                 </td>
-                <td className="py-2 px-4 text-sm text-[#E8EDF5]">
+                <td className="py-2 px-4 text-sm text-content-primary">
                   {etf.risk_rating}
                 </td>
                 <td className="py-2 pl-4 text-right">
@@ -110,8 +110,8 @@ export function EtfTable({
                     className={
                       "rounded-full border px-3 py-1 text-xs transition " +
                       (isInBasket(etf.ticker)
-                        ? "border-accent-light bg-accent/20 text-accent-light"
-                        : "border-accent/15 text-content-primary hover:border-accent-light")
+                        ? "border-accent bg-badge-bg text-badge-text"
+                        : "border-border text-content-primary hover:border-accent hover:text-accent")
                     }
                   >
                     {isInBasket(etf.ticker) ? "In basket" : "Add to compare"}

@@ -52,7 +52,7 @@ export default function HomePage() {
         </div>
       )}
       {error && (
-        <div className="card border-negative/40 bg-negative/10 p-4 text-sm text-negative">
+        <div className="card border-negative bg-negative/10 p-4 text-sm text-negative">
           {error}
         </div>
       )}

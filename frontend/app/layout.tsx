@@ -24,9 +24,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" className={`${playfair.variable} ${ibmPlexSans.variable}`}>
       <body className="font-sans min-h-screen bg-primary text-content-primary">
         <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-6">
-          <header className="mb-6 flex items-center justify-between gap-4 border-b border-accent-light/15 pb-4">
+          <header className="mb-6 flex items-center justify-between gap-4 border-b-2 border-accent bg-card pb-4">
             <div>
-              <h1 className="font-display text-2xl font-semibold tracking-tight text-content-primary">
+              <h1 className="font-display text-2xl font-semibold tracking-tight text-heading">
                 Canadian ETF Compare
               </h1>
               <p className="mt-1 text-sm text-content-secondary">
@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             </nav>
           </header>
           <main className="flex-1 pb-10">{children}</main>
-          <footer className="mt-auto border-t border-accent-light/15 pt-4 text-xs text-content-secondary">
+          <footer className="mt-auto border-t border-border pt-4 text-xs text-content-secondary">
             <p>
               For educational use only. Not investment advice. Data may be delayed or incomplete.
             </p>

@@ -8,12 +8,12 @@ body {
 
 .card {
   @apply rounded-xl backdrop-blur-sm bg-card;
-  border: 1px solid rgba(99, 179, 237, 0.15);
+  border: 1px solid #E8EDF5;
 }
 
 .input {
-  @apply w-full rounded-lg bg-secondary/80 px-3 py-2 text-sm text-content-primary placeholder-content-secondary focus:outline-none focus:ring-2 focus:ring-accent/40;
-  border: 1px solid rgba(99, 179, 237, 0.15);
+  @apply w-full rounded-lg bg-card px-3 py-2 text-sm text-content-primary placeholder-content-secondary focus:outline-none focus:ring-2 focus:ring-accent/40;
+  border: 1px solid #E8EDF5;
 }
 
 .input:focus {
@@ -21,9 +21,9 @@ body {
 }
 
 .btn-primary {
-  @apply inline-flex items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60;
+  @apply inline-flex items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60;
 }
 
 .btn-secondary {
-  @apply inline-flex items-center justify-center rounded-lg border border-accent-light/15 bg-card px-4 py-2 text-sm font-medium text-content-primary transition hover:border-accent-light;
+  @apply inline-flex items-center justify-center rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-content-primary transition hover:border-accent hover:text-accent;
 }

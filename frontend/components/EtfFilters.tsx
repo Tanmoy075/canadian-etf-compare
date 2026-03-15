@@ -82,7 +82,7 @@ export function EtfFilters({
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs text-slate-400">MER range (%)</label>
+          <label className="text-xs text-content-secondary">MER range (%)</label>
           <div className="flex gap-2">
             <input
               className="input"
