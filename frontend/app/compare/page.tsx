@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -12,38 +12,58 @@ import {
   XAxis,
   YAxis
 } from "recharts";
-import { ETFDetail, fetchCompare } from "../../lib/api";
+import { ETF, ETFDetail, fetchCompare, fetchEtfs } from "../../lib/api";
 import { CompareItem, loadCompare, saveCompare } from "../../lib/compareStore";
 
 const PERFORMANCE_PERIODS = ["1Y", "3Y", "5Y", "Since Inception"];
 const CHART_COLORS = ["#0C447C", "#1D9E75", "#378ADD", "#0F6E56", "#B5D4F4"];
+const SLOT_COUNT = 5;
 
-function getBasketFromUrl(searchParams: URLSearchParams): CompareItem[] {
+function getInitialSlots(searchParams: URLSearchParams): (CompareItem | null)[] {
   const tickers = searchParams.get("tickers");
-  if (!tickers || typeof tickers !== "string") return [];
-  const list = tickers.split(",").map((t) => t.trim()).filter(Boolean);
-  return list.slice(0, 5).map((ticker) => ({ ticker, name: ticker }));
+  let items: CompareItem[];
+  if (tickers && typeof tickers === "string") {
+    const list = tickers.split(",").map((t) => t.trim()).filter(Boolean);
+    items = list.slice(0, SLOT_COUNT).map((ticker) => ({ ticker, name: ticker }));
+  } else {
+    items = loadCompare();
+  }
+  const slots: (CompareItem | null)[] = Array(SLOT_COUNT).fill(null);
+  items.forEach((item, i) => {
+    if (i < SLOT_COUNT) slots[i] = item;
+  });
+  return slots;
 }
 
 function ComparePageContent() {
   const searchParams = useSearchParams();
-  const [basket, setBasket] = useState<CompareItem[]>([]);
+  const [slots, setSlots] = useState<(CompareItem | null)[]>(() =>
+    getInitialSlots(searchParams)
+  );
   const [data, setData] = useState<ETFDetail[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [openSearchIndex, setOpenSearchIndex] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<ETF[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const fromUrl = getBasketFromUrl(searchParams);
-    if (fromUrl.length > 0) {
-      setBasket(fromUrl);
-      saveCompare(fromUrl);
-    } else {
-      setBasket(loadCompare());
-    }
-  }, [searchParams]);
+  const basket = slots.filter((s): s is CompareItem => s != null);
+  const selectedTickers = new Set(basket.map((b) => b.ticker));
 
+  // Sync URL and storage when slots change
   useEffect(() => {
-    if (!basket.length) {
+    saveCompare(basket);
+    const tickers = basket.map((b) => b.ticker).join(",");
+    const url = tickers ? `/compare?tickers=${tickers}` : "/compare";
+    window.history.replaceState(null, "", url);
+  }, [basket]);
+
+  // Load comparison data when basket has 2+
+  useEffect(() => {
+    if (basket.length < 2) {
       setData([]);
       return;
     }
@@ -62,63 +82,181 @@ function ComparePageContent() {
     })();
   }, [basket]);
 
+  // Search API when query changes
+  const runSearch = useCallback(async (q: string) => {
+    if (!q.trim()) {
+      setSearchResults([]);
+      return;
+    }
+    setSearchLoading(true);
+    try {
+      const res = await fetchEtfs({ q: q.trim(), limit: 20, offset: 0 });
+      setSearchResults(res.items);
+    } catch {
+      setSearchResults([]);
+    } finally {
+      setSearchLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
-    saveCompare(basket);
-  }, [basket]);
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+    if (openSearchIndex === null) return;
+    searchTimeoutRef.current = setTimeout(() => {
+      runSearch(searchQuery);
+    }, 200);
+    return () => {
+      if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+    };
+  }, [searchQuery, openSearchIndex, runSearch]);
 
-  const removeFromBasket = (ticker: string) => {
-    setBasket((prev) => prev.filter((b) => b.ticker !== ticker));
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setOpenSearchIndex(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const setSlot = (index: number, item: CompareItem | null) => {
+    setSlots((prev) => {
+      const next = [...prev];
+      next[index] = item;
+      return next;
+    });
+    setOpenSearchIndex(null);
+    setSearchQuery("");
   };
 
-  const clearBasket = () => {
-    setBasket([]);
+  const removeByTicker = (ticker: string) => {
+    setSlots((prev) =>
+      prev.map((s) => (s && s.ticker === ticker ? null : s))
+    );
   };
+
+  const filteredSearchResults = searchResults.filter(
+    (etf) => !selectedTickers.has(etf.ticker)
+  );
+  const isMaxReached = basket.length >= SLOT_COUNT;
 
   return (
     <div className="space-y-4">
       <div className="card p-4">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <h2 className="text-2xl font-bold text-heading">
-              Compare basket
-            </h2>
-            <p className="mt-1 text-xs text-content-secondary">
-              You can compare up to 5 ETFs side by side.
-            </p>
-          </div>
-          <button
-            className="btn-secondary text-xs"
-            onClick={clearBasket}
-            disabled={!basket.length}
-          >
-            Clear basket
-          </button>
-        </div>
-        <div className="mt-3 flex flex-wrap gap-2 text-xs">
-          {basket.map((item) => (
-            <span
-              key={item.ticker}
-              className="inline-flex items-center gap-2 rounded-full bg-badge-bg px-3 py-1 text-badge-text"
-            >
-              <span className="text-base font-bold">{item.ticker}</span>
-              <button
-                onClick={() => removeFromBasket(item.ticker)}
-                className="text-content-secondary hover:text-badge-text"
-              >
-                ×
-              </button>
-            </span>
-          ))}
-          {!basket.length && (
-            <span className="text-content-secondary">
-              No ETFs selected. Go back to the main page and add some to
-              your basket.
-            </span>
-          )}
+        <h2 className="text-2xl font-bold text-heading">
+          Compare ETFs
+        </h2>
+        <p className="mt-1 text-xs text-content-secondary">
+          Select 2 to 5 ETFs to compare side by side.
+        </p>
+
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          {Array.from({ length: SLOT_COUNT }).map((_, i) => {
+            const value = slots[i];
+            const disabled = isMaxReached && !value;
+            return (
+              <div key={i} className="relative" ref={i === openSearchIndex ? dropdownRef : undefined}>
+                <div className="flex items-center gap-1 rounded-lg border border-border bg-card px-3 py-2 focus-within:ring-2 focus-within:ring-accent/40">
+                  <input
+                    type="text"
+                    placeholder={disabled ? "Max 5 reached" : `ETF ${i + 1}`}
+                    value={
+                      value && (openSearchIndex !== i || searchQuery === "")
+                        ? value.ticker
+                        : openSearchIndex === i
+                          ? searchQuery
+                          : ""
+                    }
+                    onChange={(e) => {
+                      if (disabled) return;
+                      setOpenSearchIndex(i);
+                      setSearchQuery(e.target.value);
+                      if (!e.target.value) setSlots((prev) => {
+                        const n = [...prev];
+                        n[i] = null;
+                        return n;
+                      });
+                    }}
+                    onFocus={() => {
+                      if (disabled) return;
+                      setOpenSearchIndex(i);
+                      setSearchQuery("");
+                    }}
+                    disabled={disabled}
+                    className="min-w-0 flex-1 bg-transparent text-sm text-content-primary placeholder-content-secondary outline-none disabled:cursor-not-allowed disabled:opacity-60"
+                  />
+                  {value && (
+                    <button
+                      type="button"
+                      onClick={() => setSlot(i, null)}
+                      className="shrink-0 text-content-secondary hover:text-negative"
+                      aria-label={`Remove ${value.ticker}`}
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+                {openSearchIndex === i && (
+                  <div className="absolute left-0 right-0 top-full z-10 mt-1 max-h-60 overflow-auto rounded-lg border border-border bg-card py-1 shadow-lg">
+                    {searchLoading ? (
+                      <div className="px-3 py-2 text-sm text-content-secondary">
+                        Searching...
+                      </div>
+                    ) : filteredSearchResults.length === 0 ? (
+                      <div className="px-3 py-2 text-sm text-content-secondary">
+                        {searchQuery.trim() ? "No matching ETFs" : "Type to search"}
+                      </div>
+                    ) : (
+                      filteredSearchResults.map((etf) => (
+                        <button
+                          key={etf.ticker}
+                          type="button"
+                          className="flex w-full flex-col px-3 py-2 text-left text-sm hover:bg-badge-bg focus:bg-badge-bg focus:outline-none"
+                          onClick={() =>
+                            setSlot(i, { ticker: etf.ticker, name: etf.name })
+                          }
+                        >
+                          <span className="font-bold text-heading">
+                            {etf.ticker}
+                          </span>
+                          <span className="text-xs text-content-primary">
+                            {etf.name}
+                          </span>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {loading && (
+      {basket.length > 0 && basket.length < 2 && (
+        <div className="flex flex-col items-center justify-center py-16">
+          <svg
+            className="mb-3 h-10 w-10 text-content-secondary"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+            />
+          </svg>
+          <p className="text-center text-sm" style={{ color: "#6B7A99" }}>
+            Select at least 2 ETFs above to start comparing
+          </p>
+        </div>
+      )}
+
+      {loading && basket.length >= 2 && (
         <div className="card p-4 text-sm text-content-secondary">
           Loading comparison...
         </div>
@@ -129,7 +267,7 @@ function ComparePageContent() {
         </div>
       )}
 
-      {data.length > 0 && (
+      {data.length >= 2 && (
         <>
           <div className="card p-4">
             <h3 className="mb-3 text-lg font-bold text-heading">
@@ -180,83 +318,93 @@ function ComparePageContent() {
 
           <div className="card overflow-x-auto p-4">
             <table className="min-w-full text-left">
-            <thead className="border-b border-border text-sm font-semibold uppercase text-content-secondary">
-              <tr>
-                <th className="py-2 pr-4">Metric</th>
-                {data.map((etf) => (
-                  <th key={etf.ticker} className="py-2 px-4">
-                    <div className="flex flex-col">
-                      <a
-                        href={`/etf/${etf.ticker}`}
-                        className="text-base font-bold text-heading hover:text-accent"
-                      >
-                        {etf.ticker}
-                      </a>
+              <thead className="border-b border-border text-sm font-semibold uppercase text-content-secondary">
+                <tr>
+                  <th className="py-2 pr-4">Metric</th>
+                  {data.map((etf) => (
+                    <th key={etf.ticker} className="py-2 px-4">
+                      <div className="flex flex-col">
+                        <div className="flex items-center justify-between gap-2">
+                          <a
+                            href={`/etf/${etf.ticker}`}
+                            className="text-base font-bold text-heading hover:text-accent"
+                          >
+                            {etf.ticker}
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => removeByTicker(etf.ticker)}
+                            className="shrink-0 text-content-secondary hover:text-negative"
+                            aria-label={`Remove ${etf.ticker}`}
+                          >
+                            ×
+                          </button>
+                        </div>
                         <span className="text-sm font-semibold text-content-primary">
-                        {etf.name}
-                      </span>
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {renderRow("Provider", data, (e) => e.provider)}
-              {renderRow("Asset class", data, (e) => e.asset_class)}
-              {renderRow("Currency", data, (e) => e.currency)}
-              {renderRow("MER (%)", data, (e) => e.mer.toFixed(2))}
-              {renderRow(
-                "Distribution yield (%)",
-                data,
-                (e) => e.distribution_yield.toFixed(2)
-              )}
-              {renderRow("Risk rating", data, (e) => e.risk_rating)}
-              {renderRow("Mgmt. fee (%)", data, (e) =>
-                e.management_fee != null
-                  ? e.management_fee.toFixed(2)
-                  : "—"
-              )}
-              {renderRow("AUM (M)", data, (e) =>
-                e.assets_under_management_millions != null
-                  ? e.assets_under_management_millions.toFixed(0)
-                  : "—"
-              )}
-              {renderRow("Inception date", data, (e) => e.inception_date || "—")}
-              {renderRow(
-                "1Y return (%)",
-                data,
-                (e) =>
-                  findPerformance(e, "1Y") ??
-                  findPerformance(e, "1y") ??
-                  "—"
-              )}
-              {renderRow(
-                "3Y return (%)",
-                data,
-                (e) =>
-                  findPerformance(e, "3Y") ??
-                  findPerformance(e, "3y") ??
-                  "—"
-              )}
-              {renderRow(
-                "5Y return (%)",
-                data,
-                (e) =>
-                  findPerformance(e, "5Y") ??
-                  findPerformance(e, "5y") ??
-                  "—"
-              )}
-              {renderRow(
-                "Since inception (%)",
-                data,
-                (e) =>
-                  findPerformance(e, "Since Inception") ??
-                  findPerformance(e, "since inception") ??
-                  "—"
-              )}
-            </tbody>
-          </table>
-        </div>
+                          {etf.name}
+                        </span>
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {renderRow("Provider", data, (e) => e.provider)}
+                {renderRow("Asset class", data, (e) => e.asset_class)}
+                {renderRow("Currency", data, (e) => e.currency)}
+                {renderRow("MER (%)", data, (e) => e.mer.toFixed(2))}
+                {renderRow(
+                  "Distribution yield (%)",
+                  data,
+                  (e) => e.distribution_yield.toFixed(2)
+                )}
+                {renderRow("Risk rating", data, (e) => e.risk_rating)}
+                {renderRow("Mgmt. fee (%)", data, (e) =>
+                  e.management_fee != null
+                    ? e.management_fee.toFixed(2)
+                    : "—"
+                )}
+                {renderRow("AUM (M)", data, (e) =>
+                  e.assets_under_management_millions != null
+                    ? e.assets_under_management_millions.toFixed(0)
+                    : "—"
+                )}
+                {renderRow("Inception date", data, (e) => e.inception_date || "—")}
+                {renderRow(
+                  "1Y return (%)",
+                  data,
+                  (e) =>
+                    findPerformance(e, "1Y") ??
+                    findPerformance(e, "1y") ??
+                    "—"
+                )}
+                {renderRow(
+                  "3Y return (%)",
+                  data,
+                  (e) =>
+                    findPerformance(e, "3Y") ??
+                    findPerformance(e, "3y") ??
+                    "—"
+                )}
+                {renderRow(
+                  "5Y return (%)",
+                  data,
+                  (e) =>
+                    findPerformance(e, "5Y") ??
+                    findPerformance(e, "5y") ??
+                    "—"
+                )}
+                {renderRow(
+                  "Since inception (%)",
+                  data,
+                  (e) =>
+                    findPerformance(e, "Since Inception") ??
+                    findPerformance(e, "since inception") ??
+                    "—"
+                )}
+              </tbody>
+            </table>
+          </div>
         </>
       )}
     </div>
@@ -321,4 +469,3 @@ function buildPerformanceChartData(etfs: ETFDetail[]) {
     return point;
   });
 }
-

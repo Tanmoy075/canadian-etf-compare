@@ -21,7 +21,7 @@ export function CompareBasketLink() {
         }
       }}
     >
-      Compare basket
+      Compare ETFs
     </Link>
   );
 }
