@@ -11,7 +11,11 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 
 export const metadata = {
   title: "Canadian ETF Compare",
-  description: "Minimalist comparison tool for Canadian ETFs"
+  description:
+    "Search, filter, and compare Canadian-listed ETFs. Free tool for Canadian investors.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
