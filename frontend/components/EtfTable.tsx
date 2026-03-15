@@ -89,26 +89,26 @@ export function EtfTable({
                     </span>
                   </div>
                 </td>
-                <td className="py-2 px-4 text-sm font-normal text-content-primary">
+                <td className="py-2 px-4 text-sm font-semibold text-content-primary">
                   {etf.provider}
                 </td>
-                <td className="py-2 px-4 text-sm font-normal text-content-primary">
+                <td className="py-2 px-4 text-sm font-semibold text-content-primary">
                   {etf.asset_class}
                 </td>
-                <td className="py-2 px-4 text-sm font-normal text-content-primary">
+                <td className="py-2 px-4 text-sm font-semibold text-content-primary">
                   {etf.mer.toFixed(2)}
                 </td>
-                <td className="py-2 px-4 text-sm font-normal text-content-primary">
+                <td className="py-2 px-4 text-sm font-semibold text-content-primary">
                   {etf.distribution_yield.toFixed(2)}
                 </td>
-                <td className="py-2 px-4 text-sm font-normal text-content-primary">
+                <td className="py-2 px-4 text-sm font-semibold text-content-primary">
                   {etf.risk_rating}
                 </td>
                 <td className="py-2 pl-4 text-right">
                   <button
                     onClick={() => toggle(etf)}
                     className={
-                      "rounded-full border px-3 py-1 text-xs transition " +
+                      "rounded-full border px-3 py-1 text-xs font-semibold transition " +
                       (isInBasket(etf.ticker)
                         ? "border-accent bg-badge-bg text-badge-text"
                         : "border-border text-content-primary hover:border-accent hover:text-accent")
