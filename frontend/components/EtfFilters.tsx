@@ -49,13 +49,13 @@ export function EtfFilters({
           value={state.q}
           onChange={handleChange("q")}
         />
-        <div className="flex gap-2 text-xs text-content-secondary">
+        <div className="flex gap-2 text-sm font-bold text-[#111111]">
           <span>Filter by provider, asset class, MER, yield, and risk.</span>
         </div>
       </div>
       <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-4">
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-semibold text-content-secondary">Provider</label>
+          <label className="text-sm font-bold text-[#111111]">Provider</label>
           <input
             className="input"
             placeholder="e.g. Vanguard"
@@ -73,7 +73,7 @@ export function EtfFilters({
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-semibold text-content-secondary">Risk rating</label>
+          <label className="text-sm font-bold text-[#111111]">Risk rating</label>
           <input
             className="input"
             placeholder="Low, Medium..."
@@ -82,7 +82,7 @@ export function EtfFilters({
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs text-content-secondary">MER range (%)</label>
+          <label className="text-sm font-bold text-[#111111]">MER range (%)</label>
           <div className="flex gap-2">
             <input
               className="input"
@@ -99,7 +99,7 @@ export function EtfFilters({
           </div>
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-semibold text-content-secondary">Yield range (%)</label>
+          <label className="text-sm font-bold text-[#111111]">Yield range (%)</label>
           <div className="flex gap-2">
             <input
               className="input"

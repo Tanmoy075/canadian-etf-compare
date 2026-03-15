@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { ReactNode } from "react";
 import { Plus_Jakarta_Sans } from "next/font/google";
-import { CompareBasketLink } from "../components/CompareBasketLink";
+import { NavLinks } from "../components/NavLinks";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -28,12 +28,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 Search, filter, and compare Canadian-listed ETFs.
               </p>
             </div>
-            <nav className="flex gap-2 text-sm">
-              <a href="/" className="btn-secondary">
-                Explore ETFs
-              </a>
-              <CompareBasketLink />
-            </nav>
+            <NavLinks />
           </header>
           <main className="flex-1 pb-10">{children}</main>
           <footer className="mt-auto border-t border-border pt-4 text-xs text-content-secondary">
