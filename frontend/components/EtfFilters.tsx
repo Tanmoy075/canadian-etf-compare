@@ -44,7 +44,7 @@ export function EtfFilters({
     <div className="card mb-4 p-4">
       <div className="mb-3 flex flex-col gap-3 md:flex-row md:items-center">
         <input
-          className="input md:flex-1"
+          className="input placeholder:font-bold placeholder:text-[#111111] md:flex-1"
           placeholder="Search by name or ticker"
           value={state.q}
           onChange={handleChange("q")}
@@ -64,7 +64,7 @@ export function EtfFilters({
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-semibold text-content-secondary">Asset class</label>
+          <label className="text-sm font-bold text-[#111111]">Asset class</label>
           <input
             className="input"
             placeholder="Equity, Fixed Income..."

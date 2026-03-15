@@ -161,10 +161,10 @@ export function EtfDetailView({ etf }: { etf: ETFDetail }) {
 function Metric({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-md bg-primary px-3 py-2">
-      <div className="text-[11px] font-semibold uppercase tracking-wide text-content-secondary">
+      <div className="text-[13px] font-bold uppercase tracking-[0.05em] text-[#111111]">
         {label}
       </div>
-      <div className="mt-1 text-sm font-normal text-content-primary">
+      <div className="mt-1 text-[15px] font-semibold text-[#333333]">
         {value}
       </div>
     </div>
