@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
@@ -8,17 +10,22 @@ from .repository import ETFRepository
 
 app = FastAPI(title="Canadian ETF Compare API", version="0.1.0")
 
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
+allowed_origins = [origin.strip() for origin in allowed_origins if origin.strip()]
+
+if not allowed_origins:
+    allowed_origins = [
+        "https://canadianetfcompare.com",
+        "https://www.canadianetfcompare.com",
+        "https://canadian-etf-compare.vercel.app",
+    ]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://canadian-etf-compare.vercel.app",
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"],
 )
 
 repo = ETFRepository()
