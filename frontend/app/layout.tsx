@@ -14,7 +14,7 @@ export const metadata = {
   description:
     "Search, filter, and compare Canadian-listed ETFs. Free tool for Canadian investors.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icon",
   },
 };
 
