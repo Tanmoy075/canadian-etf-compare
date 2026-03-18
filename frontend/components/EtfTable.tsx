@@ -44,7 +44,6 @@ export function EtfTable({
   return (
     <div className="card p-4">
         <div className="mb-3 flex items-center justify-between text-sm">
-        <span className="font-bold text-[#111111]">{total} ETFs found</span>
         <span className="font-bold text-[#111111]">
           Compare ETFs: {basket.length} selected (up to 5).{" "}
           <a
