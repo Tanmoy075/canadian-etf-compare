@@ -48,7 +48,14 @@ export default function HomePage() {
 
   const tabbedItems = useMemo(() => {
     const items = data?.items ?? [];
-    return items.filter((etf) => etf.currency === activeTab);
+    const canadianETFs = items.filter(
+      (etf) =>
+        !etf.currency || etf.currency.trim().toUpperCase() === "CAD"
+    );
+    const usETFs = items.filter(
+      (etf) => etf.currency && etf.currency.trim().toUpperCase() === "USD"
+    );
+    return activeTab === "CAD" ? canadianETFs : usETFs;
   }, [data, activeTab]);
 
   const tabbedTotal = tabbedItems.length;
