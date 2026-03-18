@@ -48,14 +48,11 @@ export default function HomePage() {
 
   const tabbedItems = useMemo(() => {
     const items = data?.items ?? [];
-    const canadianETFs = items.filter(
-      (etf) =>
-        !etf.currency || etf.currency.trim().toUpperCase() === "CAD"
-    );
-    const usETFs = items.filter(
-      (etf) => etf.currency && etf.currency.trim().toUpperCase() === "USD"
-    );
-    return activeTab === "CAD" ? canadianETFs : usETFs;
+    // Canadian ETFs - show everything that is NOT USD
+    const isCanadian = (etf: any) => etf.currency !== "USD";
+    // US ETFs - show only explicit USD
+    const isUS = (etf: any) => etf.currency === "USD";
+    return activeTab === "CAD" ? items.filter(isCanadian) : items.filter(isUS);
   }, [data, activeTab]);
 
   const tabbedTotal = tabbedItems.length;
