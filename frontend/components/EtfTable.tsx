@@ -6,10 +6,12 @@ import { useEffect, useState } from "react";
 
 export function EtfTable({
   etfs,
-  total
+  total,
+  activeCurrency
 }: {
   etfs: ETF[];
   total: number;
+  activeCurrency?: "CAD" | "USD";
 }) {
   const [basket, setBasket] = useState<CompareItem[]>([]);
 
@@ -78,12 +80,19 @@ export function EtfTable({
               >
                 <td className="py-2 pr-4 align-middle">
                   <div className="flex flex-col">
-                    <a
-                      href={`/etf/${etf.ticker}`}
-                      className="text-base font-bold text-heading hover:text-accent"
-                    >
-                      {etf.ticker}
-                    </a>
+                    <div className="flex items-center gap-2">
+                      <a
+                        href={`/etf/${etf.ticker}`}
+                        className="text-base font-bold text-heading hover:text-accent"
+                      >
+                        {etf.ticker}
+                      </a>
+                      {activeCurrency === "USD" && (
+                        <span className="rounded bg-[#0C447C] px-2 py-0.5 text-xs font-semibold text-white">
+                          USD
+                        </span>
+                      )}
+                    </div>
                     <span className="text-sm font-semibold text-content-primary">
                       {etf.name}
                     </span>
