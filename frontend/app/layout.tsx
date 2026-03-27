@@ -10,9 +10,28 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata = {
-  title: "Canadian ETF Compare",
+  title: "Canadian ETF Compare — Free ETF Comparison Tool",
   description:
-    "Search, filter, and compare Canadian-listed ETFs. Free tool for Canadian investors.",
+    "Compare 130+ Canadian and US ETFs side by side. Filter by MER, yield, risk, asset class. Free tool for Canadian investors. No login required.",
+  keywords:
+    "Canadian ETF, ETF comparison, TFSA ETF, RRSP ETF, best Canadian ETF, VFV, XEQT, VEQT, ETF compare Canada",
+  openGraph: {
+    title: "Canadian ETF Compare",
+    description:
+      "Compare 130+ Canadian and US ETFs side by side. Free tool for Canadian investors.",
+    url: "https://canadianetfcompare.com",
+    siteName: "Canadian ETF Compare",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Canadian ETF Compare",
+    description:
+      "Compare 130+ Canadian and US ETFs side by side. Free tool for Canadian investors.",
+  },
+  alternates: {
+    canonical: "https://canadianetfcompare.com",
+  },
   icons: {
     icon: "/icon",
   },
