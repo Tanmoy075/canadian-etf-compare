@@ -7,6 +7,30 @@ import { ETF, ETFListResponse, fetchEtfs } from "../lib/api";
 
 type MarketTab = "CAD" | "USD";
 
+function EtfTableSkeleton() {
+  // Roughly matches the height of the real table (header + ~12 rows) to prevent CLS.
+  const rows = Array.from({ length: 12 });
+  return (
+    <div className="card p-4" aria-busy="true" aria-live="polite">
+      <div className="mb-3 h-5 w-[420px] max-w-full animate-pulse rounded bg-border" />
+      <div className="overflow-x-auto">
+        <div className="min-h-[560px]">
+          <div className="h-9 w-full animate-pulse rounded bg-border" />
+          <div className="mt-2 space-y-2">
+            {rows.map((_, i) => (
+              <div
+                key={i}
+                className="h-10 w-full animate-pulse rounded bg-border"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+      <span className="sr-only">Loading ETFs…</span>
+    </div>
+  );
+}
+
 export default function HomePage() {
   const [filters, setFilters] = useState<FilterState | null>(null);
   const [data, setData] = useState<ETFListResponse | null>(null);
@@ -86,25 +110,23 @@ export default function HomePage() {
           🇺🇸 Top US ETFs
         </button>
       </div>
-      {loading && (
-        <div className="card p-4 text-sm text-content-secondary">
-          Loading ETFs...
-        </div>
-      )}
       {error && (
         <div className="card border-negative bg-negative/10 p-4 text-sm text-negative">
           {error}
         </div>
       )}
-      {data && (
-        <EtfTable
-          etfs={[...(tabbedItems as ETF[])].sort((a, b) =>
-            a.ticker.localeCompare(b.ticker)
-          )}
-          total={tabbedTotal}
-          activeCurrency={activeTab}
-        />
-      )}
+      <div className="min-h-[560px]">
+        {loading && <EtfTableSkeleton />}
+        {!loading && data && (
+          <EtfTable
+            etfs={[...(tabbedItems as ETF[])].sort((a, b) =>
+              a.ticker.localeCompare(b.ticker)
+            )}
+            total={tabbedTotal}
+            activeCurrency={activeTab}
+          />
+        )}
+      </div>
     </div>
   );
 }
